@@ -3,9 +3,10 @@
 
 typedef struct TreeMap TreeMap;
 
-typedef struct TreePair {
-     void * key;
-     void * value;
+typedef struct TreePair
+{
+    void * key;
+    void * value;
 } TreePair;
 
 TreeMap * createTreeMap(int (*lower_than_int) (void* key1, void* key2));

@@ -15,23 +15,34 @@ int lower_than_string(void * key1, void * key2){
 }
 
 int main(void) {
-  short choice = -1; 
-  
-  do {
-    showMenu();
-    
-    fflush(stdin);
-	scanf("%hi", &choice);
+	short choice = -1;
+	char userID[15];
 
-	if(choice > 1 && choice < 10) {
-      /*if(!firstMap(mapUsers)) {
-        printf("\nNo se ha abierto archivo alguno. Cerrando.");
-        break;
-      }*/
-    }
+	List * rByAffinity = createList();
+	
+	HashMap * mapRecipes = createMap(50);
+	HashMap * mapIngredients = createMap(150);
+	HashMap * mapUsers = createMap(20);
+	
+	TreeMap * rByPopularity = createTreeMap(lower_than_string);
+  
+	do {
+    	showMenu();
+
+		if(choice == -1) importDatabases(mapUsers, mapIngredients, mapRecipes);
     
-		showChoice(choice);
+    	fflush(stdin);
+		scanf("%hi", &choice);
+
+		if(choice > 1 && choice < 10) {
+      		if(!firstMap(mapUsers)) {
+				printf("No se ha iniciado sesión. Cerrando...");
+				break;
+      		}
+		}
+		
+		showChoice(rByAffinity, mapRecipes, mapIngredients, mapUsers, rByPopularity, choice, &userID);
 	} while(choice != 0);
   
-  return 0;
+  	return 0;
 }

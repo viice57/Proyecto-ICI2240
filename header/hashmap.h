@@ -11,9 +11,10 @@
 
 typedef struct HashMap HashMap;
 
-typedef struct HashPair {
-     char * key;
-     void * value;
+typedef struct HashPair
+{
+	char * key;
+    void * value;
 } HashPair;
 
 HashMap * createMap(long capacity);

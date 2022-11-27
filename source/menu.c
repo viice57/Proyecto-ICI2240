@@ -13,9 +13,9 @@ void showMenu()
 	printf("\n%sMenú de opciones%s\n\n", "\x1B[1m", "\x1B[0m");
 
 	printf("(1) Iniciar sesión\n");
-	printf("(2) Agregar ingredientes\n");
-  printf("(3) Mostrar recetas\n");
-	printf("(4) Agregar receta\n");
+	printf("(2) Agregar ingrediente\n");
+	printf("(3) Agregar receta\n");
+  printf("(4) Mostrar recetas\n");
 	printf("(5) Agregar receta(s) o ingrediente(s) favorit@(s)\n");
 	printf("(6) Recetas recomendadas\n");
 	printf("(7) Diseñar minuta\n");
@@ -42,7 +42,7 @@ void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredien
 		}
 		case 1:
 		{
-      		msg = userLogin(mapUsers, &userID);
+      		msg = userLogin(mapUsers, userID);
 
      		if(msg == 1)
 			{
@@ -51,7 +51,7 @@ void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredien
 			else if(msg == 2)
 			{
         		printf(GREEN "\n************************\n");
-        		printf("* ¡Ha iniciado sesión! *\n");
+        		printf("* ¡Ha iniciado sesión! *\n", userID);
         		printf("************************\n" RESET);
       		}
 			else if(msg == 3)
@@ -78,24 +78,7 @@ void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredien
       		}
   			break;
 		}
-  		case 3:
-		{
-  			msg = showRecipes(mapRecipes, rByPopularity);
-			//msg = 1;
-
-      		if(msg)
-			{
-        		printf(RED "\nNo se pudo procesar la solicitud." RESET);
-			}
-			else
-			{
-        		printf(GREEN "\n*********************************\n");
-        		printf("* ¡Se han mostrado las recetas! *\n");
-        		printf("*********************************\n" RESET);  
-      		}
-  			break;
-		}
-  		case 4:
+		case 3:
 		{
   			//msg = addRecipe(mapRecipes);
 			msg = 1;
@@ -112,10 +95,26 @@ void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredien
       		}
   			break;
 		}
+  		case 4:
+		{
+  			msg = showRecipes(mapRecipes, rByPopularity);
+			//msg = 1;
+
+      		if(msg)
+			{
+        		printf(RED "\nNo se pudo procesar la solicitud." RESET);
+			}
+			else
+			{
+        		printf(GREEN "\n*********************************\n");
+        		printf("* ¡Se han mostrado las recetas! *\n");
+        		printf("*********************************\n" RESET);  
+      		}
+  			break;
+		}
   		case 5:
 		{
-  			//msg = addFavs();
-			msg = 1;
+  			msg = addFavs(mapUsers, mapIngredients, mapRecipes, &userID);
 
       		if(msg)
 			{
@@ -124,7 +123,7 @@ void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredien
 			else
 			{
         		printf(GREEN "\n***************************\n");
-        		printf("* ¡Se han agregado tod@s! *\n");
+        		printf("* ¡Se han agregado tod@(s)! *\n");
         		printf("***************************\n" RESET);  
       		}
   			break;

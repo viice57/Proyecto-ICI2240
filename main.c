@@ -35,13 +35,15 @@ int main(void) {
 		scanf("%hi", &choice);
 
 		if(choice > 1 && choice < 10) {
-      		if(!firstMap(mapUsers)) {
-				printf("No se ha iniciado sesión. Cerrando...");
+      		if(!searchMap(mapUsers, userID)) {
+				printf("\nNo se ha iniciado sesión. Cerrando...");
 				break;
       		}
 		}
 		
-		showChoice(rByAffinity, mapRecipes, mapIngredients, mapUsers, rByPopularity, choice, &userID);
+		showChoice(rByAffinity, mapRecipes, mapIngredients, mapUsers, rByPopularity, choice, userID);
+		
+		if(searchMap(mapUsers, userID)) printf("%sIniciaste sesión como: %s%s", "\x1B[1m", userID, "\x1B[0m");
 	} while(choice != 0);
   
   	return 0;

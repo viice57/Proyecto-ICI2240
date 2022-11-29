@@ -51,7 +51,7 @@ void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredien
 			else if(msg == 2)
 			{
         		printf(GREEN "\n************************\n");
-        		printf("* ¡Ha iniciado sesión! *\n", userID);
+        		printf("* ¡Ha iniciado sesión! *\n");
         		printf("************************\n" RESET);
       		}
 			else if(msg == 3)
@@ -64,41 +64,39 @@ void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredien
 		}
   		case 2:
 		{
-      		//msg = addIngredient(mapRecipes, mapIngredients);
+      		msg = addIngredient(mapIngredients, userID);
 
       		if(msg)
 			{
-				printf(RED "\nFallo al agregar." RESET);
+				printf(RED "\nFallo al agregar. Usted ya tiene el ingrediente.\n" RESET);
 			}
 			else
 			{
-        		printf(GREEN "\n****************************\n");
+        		printf(GREEN "\n********************************\n");
         		printf("* ¡Ingrediente(s) agregado(s)! *\n");
-        		printf("****************************\n" RESET);  
+        		printf("********************************\n" RESET);  
       		}
   			break;
 		}
 		case 3:
 		{
-  			//msg = addRecipe(mapRecipes);
-			msg = 1;
+  			msg = addRecipe(mapRecipes, userID);
 
       		if(msg)
 			{
-        		printf(RED "\nNo se pudo añadir." RESET);
+        		printf(RED "\nNo se pudo añadir. Ya existe una receta con ese nombre.\n" RESET);
       		}
 			else
 			{
-        		printf(GREEN "\n*********************************\n");
-        		printf("* ¡Se han agregado las recetas! *\n");
-        		printf("*********************************\n" RESET);  
+        		printf(GREEN "\n*************************************\n");
+        		printf("* ¡Se han agregado la(s) receta(s)! *\n");
+        		printf("*************************************\n" RESET);  
       		}
   			break;
 		}
   		case 4:
 		{
   			msg = showRecipes(mapRecipes, rByPopularity);
-			//msg = 1;
 
       		if(msg)
 			{
@@ -114,11 +112,11 @@ void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredien
 		}
   		case 5:
 		{
-  			msg = addFavs(mapUsers, mapIngredients, mapRecipes, &userID);
+  			msg = addFavs(mapUsers, mapIngredients, mapRecipes, userID);
 
       		if(msg)
 			{
-        		printf(RED "\nNo se pudo agregar." RESET);
+        		printf(RED "\nNo se pudo agregar.\n" RESET);
       		}
 			else
 			{

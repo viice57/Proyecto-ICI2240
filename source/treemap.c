@@ -18,10 +18,10 @@ struct TreeMap
 {
   	TreeNode * root;
   	TreeNode * current;
-  	int (*lower_than) (void * key1, void * key2);
+  	int (*lower_than) (unsigned short * key1, unsigned short * key2);
 };
 
-int is_equal_tree(TreeMap * tree, void * key1, void * key2)
+int is_equal_tree(TreeMap * tree, unsigned short * key1, unsigned short * key2)
 {
 	if(tree->lower_than(key1, key2) == 0 && tree->lower_than(key2, key1) == 0) return 1;
  	else return 0;
@@ -35,7 +35,7 @@ TreeNode * minimum(TreeNode * x)
   	return x;
 }
 
-TreeNode * createTreeNode(void * key, void * value)
+TreeNode * createTreeNode(unsigned short * key, void * value)
 {
   	TreeNode * new = (TreeNode *) malloc(sizeof(TreeNode));
   	if(!new) return NULL;
@@ -48,7 +48,7 @@ TreeNode * createTreeNode(void * key, void * value)
   	return new;
 }
 
-TreeMap * createTreeMap(int (*lower_than) (void * key1, void * key2))
+TreeMap * createTreeMap(int (*lower_than) (unsigned short * key1, unsigned short * key2))
 {
   	TreeMap * new = (TreeMap *) malloc(sizeof(TreeMap));
   	if(!new) return NULL;
@@ -59,7 +59,7 @@ TreeMap * createTreeMap(int (*lower_than) (void * key1, void * key2))
  	return new;
 }
 
-void insertTreeMap(TreeMap * tree, void* key, void * value)
+void insertTreeMap(TreeMap * tree, unsigned short * key, void * value)
 {
 	if(!tree) return;
     
@@ -85,7 +85,7 @@ void insertTreeMap(TreeMap * tree, void* key, void * value)
   	tree->current = new;
 }
 
-void removeNode(TreeMap * tree, TreeNode* node)
+void removeNode(TreeMap * tree, TreeNode * node)
 {
   	//nodo hoja, 0 hijos
   	if(!node->right && !node->left)
@@ -125,7 +125,7 @@ void removeNode(TreeMap * tree, TreeNode* node)
   	return;
 }
 
-void eraseTreeMap(TreeMap * tree, void* key)
+void eraseTreeMap(TreeMap * tree, unsigned short * key)
 {
   	if(!tree || !tree->root) return;
   	if(!searchTreeMap(tree, key)) return;
@@ -134,7 +134,7 @@ void eraseTreeMap(TreeMap * tree, void* key)
   	removeNode(tree, node);
 }
 
-TreePair * searchTreeMap(TreeMap * tree, void * key)
+TreePair * searchTreeMap(TreeMap * tree, unsigned short * key)
 {
   	if(!tree || !tree->root) return NULL;
     
@@ -149,10 +149,10 @@ TreePair * searchTreeMap(TreeMap * tree, void * key)
   	tree->current = aux; 
   	if(!aux) return NULL;
 	
-  	return (void *) aux->pair;
+  	return aux->pair;
 }
 
-TreePair * upperBound(TreeMap * tree, void * key)
+TreePair * upperBound(TreeMap * tree, unsigned short * key)
 {
   	if (!tree || !tree->root) return NULL;
     
@@ -193,7 +193,6 @@ TreePair * nextTreeMap(TreeMap * tree)
   	{
    		TreeNode * aux = tree->current->right;
     	tree->current = minimum(aux);
-    	printf(minimum(aux));
     
     	return tree->current->pair;
   	}

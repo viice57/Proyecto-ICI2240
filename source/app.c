@@ -83,7 +83,7 @@ void insertIntoList(char * sType, HashMap * map, char * key, item * newItem)
   	}
 }
 
-/* Función válida únicamente para árbol de popularidades */
+/* Función válida únicamente para árbol de popularidades. Crea u obtiene la lista dentro de nodo->value */
 void insertListIntoTree(TreeMap * rByPopularity, unsigned short * popularity, char * recipeName)
 {
 	/* Creación de un nuevo item (nombre de receta) para la lista que está en el árbol de popularidades */

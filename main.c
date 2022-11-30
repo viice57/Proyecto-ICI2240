@@ -18,29 +18,37 @@ int main(void) {
 	short choice = -1, count;
 	char userID[15];
 
+	/* Creación de mapas y árbol de popularidades */
 	HashMap * mapRecipes = createMap(50);
 	HashMap * mapIngredients = createMap(150);
 	HashMap * mapUsers = createMap(20);
 	TreeMap * rByPopularity = createTreeMap(lower_than_string);
 
+	/* Importamos todos los datos que están en archivos .csv */
 	importDatabases(rByPopularity, mapUsers, mapIngredients, mapRecipes);
-	
+
+	/* Mientras la opción no sea 0 */
 	do {
+		/* Menú de opciones */
     	showMenu();
 
+		/* Escaneamos opción */
     	fflush(stdin);
 		count = scanf("%hi", &choice);
 
-		if(choice > 1 && choice < 10) {
+		/* Verificación de que el usuario haya pasado por la opción 1 */
+		if(choice > 1 && choice < 7) {
       		if(!searchMap(mapUsers, userID)) {
 				printf("\nNo se ha iniciado sesión. Cerrando...");
 				break;
       		}
 		}
-		
+
+		/* Se muestra la función elegida */
 		showChoice(mapRecipes, mapIngredients, mapUsers, rByPopularity, choice, userID);
-		
-		if(searchMap(mapUsers, userID)) printf("%sInició sesión como: %s%s", "\x1B[1m", userID, "\x1B[0m");
+
+		/* Se muestra el usuario que inició sesión */
+		if(searchMap(mapUsers, userID) && choice != 0) printf("%sInició sesión como: %s%s", "\x1B[1m", userID, "\x1B[0m");
 	} while(choice != 0);
   
   	return 0;

@@ -8,6 +8,88 @@ Spaguetti,Porotos con riendas
 Sal,Porotos con riendas
 Aceite,Porotos con riendas
 Espinaca,Porotos con riendas
+Pure,Pastel de papas
+Carne,Pastel de papas
+Cebolla,Pastel de papas
+Pimenton,Pastel de papas
+Sal,Pastel de papas
+Aceite,Pastel de papas
+Huevo,Pastel de papas
+Aceitunas,Pastel de papas
+Harina,Waffles
+Huevo,Waffles
+Mantequilla,Waffles
+Leche,Waffles
+Polvos de hornear,Waffles
+Frutilla,Waffles
+Salsa de chocolate,Waffles
+Yogurt,Yogurt con avena
+Avena,Yogurt con avena
+Chía,Yogurt con avena
+Arandano,Yogurt con avena
+Arroz,Arroz con pollo
+pollo,Arroz con pollo
+Aceite,Arroz con pollo
+Pimenton,Arroz con pollo
+Apio,Arroz con pollo
+Cebolla,Arroz con pollo
+Ajo,Arroz con pollo
+Alcaparras,Arroz con pollo
+Cilantro,Arroz con pollo
+Agua,Arroz con pollo
+Zanahoria,Arroz con pollo
+Carne,Salpicon
+Papa,Salpicon
+Mayonesa,Salpicon
+Zanahoria,Salpicon
+Huevo,Salpicon
+Lechuga,Salpicon
+Ciboulette,Salpicon
+Sal,Salpicon
+Tomate,Salpicon
+Huevo,Paila de huevo
+Tocino,Paila de huevo
+Aceite,Paila de huevo
+Sal,Paila de huevo
+Tomate,Paila de huevo
+Cereal,Cereal con yogurt
+Yogurt,Cereal con yogurt
+Pollo,Sopa de pollo
+Puerro,Sopa de pollo
+Zanahoria,Sopa de pollo
+Cebolla,Sopa de pollo
+Perejil,Sopa de pollo
+Pimenton,Sopa de pollo
+Agua,Sopa de pollo
+Sal,Sopa de pollo
+Fideos,Sopa de pollo
+Pollo,Cazuela de pollo
+Papas,Cazuela de pollo
+Repollo,Cazuela de pollo
+Porotos verdes,Cazuela de pollo
+Zanahoria,Cazuela de pollo
+Arroz,Cazuela de pollo
+Brocoli,prueba1234
+Zanahoria,prueba1234
+Manzana,Tutifruti
+Avena,Tutifruti
+Naranja,Tutifruti
+Frutilla,Tutifruti
+Yogurt,Tutifruti
+Platano,Tutifruti
+Lechuga,Ensalada Cesar
+Pollo,Ensalada Cesar
+Pan,Ensalada Cesar
+Queso,Ensalada Cesar
+Huevo,Ensalada Cesar
+Sal,Ensalada Cesar
+Anchoas,Ensalada Cesar
+Pimenton,Ensalada Cesar
+Aceite,Ensalada Cesar
+Pan,Completo
+Tomate,Completo
+Palta,Completo
+Salchicha,Completo
 Fideos,Fideos a la bolognesa
 Carne,Fideos a la bolognesa
 Cebolla,Fideos a la bolognesa
@@ -18,84 +100,3 @@ Apio,Fideos a la bolognesa
 Queso,Fideos a la bolognesa
 Albahaca,Fideos a la bolognesa
 Pimenton,Fideos a la bolognesa
-Manzana,Tutifruti
-Avena,Tutifruti
-Naranja,Tutifruti
-Frutilla,Tutifruti
-Yogurt,Tutifruti
-Platano,Tutifruti
-Huevo,Paila de huevo
-Tocino,Paila de huevo
-Aceite,Paila de huevo
-Sal,Paila de huevo
-Tomate,Paila de huevo
-Cereal,Cereal con yogurt
-Yogurt,Cereal con yogurt
-Pan,Completo
-Tomate,Completo
-Palta,Completo
-Salchicha,Completo
-Pollo,Cazuela de pollo
-Papas,Cazuela de pollo
-Repollo,Cazuela de pollo
-Porotos verdes,Cazuela de pollo
-Zanahoria,Cazuela de pollo
-Arroz,Cazuela de pollo
-Yogurt,Yogurt con avena
-Avena,Yogurt con avena
-Chía,Yogurt con avena
-Arandano,Yogurt con avena
-Lechuga,Ensalada Cesar
-Pollo,Ensalada Cesar
-Pan,Ensalada Cesar
-Queso,Ensalada Cesar
-Huevo,Ensalada Cesar
-Sal,Ensalada Cesar
-Anchoas,Ensalada Cesar
-Pimenton,Ensalada Cesar
-Aceite,Ensalada Cesar
-Pure,Pastel de papas
-Carne,Pastel de papas
-Cebolla,Pastel de papas
-Pimenton,Pastel de papas
-Sal,Pastel de papas
-Aceite,Pastel de papas
-Huevo,Pastel de papas
-Aceitunas,Pastel de papas
-Carne,Salpicon
-Papa,Salpicon
-Mayonesa,Salpicon
-Zanahoria,Salpicon
-Huevo,Salpicon
-Lechuga,Salpicon
-Ciboulette,Salpicon
-Sal,Salpicon
-Tomate,Salpicon
-Pollo,Sopa de pollo
-Puerro,Sopa de pollo
-Zanahoria,Sopa de pollo
-Cebolla,Sopa de pollo
-Perejil,Sopa de pollo
-Pimenton,Sopa de pollo
-Agua,Sopa de pollo
-Sal,Sopa de pollo
-Fideos,Sopa de pollo
-Harina,Waffles
-Huevo,Waffles
-Mantequilla,Waffles
-Leche,Waffles
-Sal,waffles
-Polvos de hornear,Waffles
-Frutilla,Waffles
-Salsa de chocolate,Waffles
-arroz,Arroz con pollo
-pollo,Arroz con pollo
-aceite,Arroz con pollo
-pimenton,Arroz con pollo
-apio,Arroz con pollo
-cebolla,Arroz con pollo
-ajo,Arroz con pollo
-alcaparras,Arroz con pollo
-cilantro,Arroz con pollo
-agua,Arroz con pollo
-zanahoria,Arroz con pollo

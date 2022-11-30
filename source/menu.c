@@ -15,16 +15,16 @@ void showMenu()
 	printf("(1) Iniciar sesión\n");
 	printf("(2) Agregar ingrediente\n");
 	printf("(3) Agregar receta\n");
-  printf("(4) Mostrar recetas\n");
+	printf("(4) Mostrar recetas\n");
 	printf("(5) Agregar receta(s) o ingrediente(s) favorit@(s)\n");
 	printf("(6) Recetas recomendadas\n");
 	printf("(7) Diseñar minuta\n");
-	printf("(8) Ver minuta de otros usuarios\n");
-	printf("(0) Terminar el programa\n");
+	printf("(0) Terminar el programa y exportar todo\n");
   
 	printf("\nIndique la accion deseada (solo números): ");
 }
 
+/* Función que permite acceder al resto de funciones e imprime mensajes provenientes de ellas */
 void showChoice(HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUsers, TreeMap * rByPopularity, short choice, char * userID)
 {
 	int msg;
@@ -35,6 +35,8 @@ void showChoice(HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUse
 	{
     	case 0:
 		{
+			exportDatabases(mapUsers, mapIngredients, mapRecipes);
+			
       		printf(GREEN "\n*********************\n");
   			printf("* Fin del programa. *\n");
   			printf("*********************\n" RESET);
@@ -145,7 +147,7 @@ void showChoice(HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUse
 		}
 		case 7:
 		{
-  			//msg = design();
+  			//msg = design(mapUsers);
 			msg = 1;
 
       		if(msg)
@@ -157,23 +159,6 @@ void showChoice(HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUse
         		printf(GREEN "\n****************************\n");
         		printf("* ¡Se ha creado la minuta! *\n");
         		printf("****************************\n" RESET);  
-      		}
-  			break;
-		}
-		case 8:
-		{
-  			//msg = seeOthers();
-			msg = 1;
-
-      		if(msg)
-			{
-        		printf(RED "\nNo se han encontrado resultados." RESET);
-      		}
-			else
-			{
-        		printf(GREEN "\n******************************\n");
-        		printf("* ¡Se ha mostrado la minuta! *\n");
-        		printf("******************************\n" RESET);  
       		}
   			break;
 		}

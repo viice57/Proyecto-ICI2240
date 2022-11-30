@@ -46,7 +46,7 @@ void insertIntoList(char * sType, HashMap * map, char * key, item * newItem)
   	{
 		List * listAux;
 		
-    	/* Obtención de la lista desde nodo->value. Pero primero verificar con qué elemento se trabaja */
+    	/* Obtención de la lista desde nodo->value. Pero primero clasificar con qué elemento se trabaja */
 		if(strcmp(sType, "ingredient") == 0)
 		{
 			/* Lista ingredientes favoritos (existe en mapa usuarios) */
@@ -63,7 +63,7 @@ void insertIntoList(char * sType, HashMap * map, char * key, item * newItem)
 			listAux = ((recipe *) searchInMap->value)->ingredients;
 		}
 
-		/* Comprobamos de que existan elementos en la lista */
+		/* Comprobamos que exista algún elemento en la lista */
 		if(firstList(listAux))
 		{
 			/* Recorremos los nombres que hay en la lista */
@@ -86,7 +86,7 @@ void insertIntoList(char * sType, HashMap * map, char * key, item * newItem)
 /* Función válida únicamente para árbol de popularidades. Crea u obtiene la lista dentro de nodo->value */
 void insertListIntoTree(TreeMap * rByPopularity, unsigned short * popularity, char * recipeName)
 {
-	/* Creación de un nuevo item (nombre de receta) para la lista que está en el árbol de popularidades */
+	/* Creación de un nuevo item (nombre de receta) en la lista */
 	item * addRecipeName = (item *) malloc(sizeof(item));
 	strncpy(addRecipeName->name, recipeName, sizeof(addRecipeName->name));
 
@@ -94,20 +94,20 @@ void insertListIntoTree(TreeMap * rByPopularity, unsigned short * popularity, ch
 	TreePair * searchTree = searchTreeMap(rByPopularity, popularity);
 	if(!searchTree)
 	{
-		/* Creación de lista, agregar nombre e insertar al árbol la nueva popularidad (la lista es el value) */
+		/* Creación de lista, agregar nombre, e insertar al árbol la nueva popularidad y lista */
 		List * recipeNames = createList();
 		pushBack(recipeNames, addRecipeName);
 		insertTreeMap(rByPopularity, popularity, recipeNames);
 	}
 	else
 	{	
-		/* Como ya existe, obtenemos la lista de nombres y agregamos un nombre más */
+		/* Como ya existe, obtenemos la lista de nombres y agregamos otro nombre más */
     	List * listAux = (List *) searchTree->value;
     	pushBack(listAux, addRecipeName);
 	}
 }
 
-/* Función que permite importar todos los archivos de la carpeta /file a tablas y listas correspondientes */
+/* Función que permite importar todos los archivos de la carpeta /file a mapas y listas correspondientes */
 void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes)
 {
 	/*************************************************************/
@@ -131,7 +131,7 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
 		/* Reservamos memoria para un nuevo nodo usuario */
     	user * importUser = (user *) malloc(sizeof(user));
 		
-		/* Separamos los siguientes datos: nombre e IMC */
+		/* Separamos los siguientes datos: nombre e IMC. Además, se crean las listas correspondientes a cada usuario */
 		strncpy(importUser->name, strtok(readLineUsers, ","), sizeof(importUser->name));
 		strncpy(importUser->imc, strtok(NULL, "\n"), sizeof(importUser->imc));
 		importUser->favIngredients = createList();
@@ -149,7 +149,7 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
 	/* Variable exclusiva para líneas de favoritos */
     char readLineFavs[50];
 
-    /* Abrimos el archivo de usuarios en modo lectura. Si no existe, se acaba el programa. */
+    /* Abrimos el archivo de favoritos en modo lectura. Si no existe, se acaba el programa. */
     FILE * favsDB = fopen("./file/favoritos.csv", "r");
 	if(!favsDB)
 	{
@@ -199,6 +199,7 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
     	strncpy(importRecipe->type, strtok(NULL, "\n"), sizeof(importRecipe->type));
 		importRecipe->ingredients = createList();
 
+		/* Inserción o búsqueda de popularidad (árbol de popularidades) */
 		insertListIntoTree(rByPopularity, &importRecipe->popularity, importRecipe->name);
 
     	/* Insertamos nodo en tabla hash */
@@ -209,10 +210,10 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
 	/*          Importación de ingredientes de recetas           */
 	/*************************************************************/
 
-	/* Variable exclusiva para líneas de favoritos */
+	/* Variable exclusiva para líneas de ingredientes */
     char readRecipeIngredients[50];
 
-    /* Abrimos el archivo de usuarios en modo lectura. Si no existe, se acaba el programa. */
+    /* Abrimos el archivo de ingredientes que componen una receta en modo lectura. Si no existe, se acaba el programa. */
     FILE * recipeIngredientsDB = fopen("./file/ingredientes_recetas.csv", "r");
 	if(!recipeIngredientsDB)
 	{
@@ -223,7 +224,7 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
  	/* Ciclo para leer cada ingrediente e insertarlo a una lista */
 	while(fgets(readRecipeIngredients, 50, recipeIngredientsDB))
 	{
-		/* Reservamos memoria para un nuevo ingrediente*/
+		/* Reservamos memoria para un nuevo ingrediente */
     	item * newIngredient = (item *) malloc(sizeof(item));
 		
 		/* Separamos los siguientes datos: nombre y receta al que pertenece */
@@ -395,7 +396,7 @@ int addIngredient(HashMap * mapIngredients, char * userID)
 		ingredientSearch = searchMap(mapIngredients, newIngredient->name);
 		if(ingredientSearch)
 		{
-			/* Comparamos el dueño del ingrediente con el nombre del usuario actual */
+			/* Comparamos el dueño del ingrediente buscado con el nombre del usuario actual */
 			if(strcmp(((ingredient *) ingredientSearch->value)->owner, userID) == 0)
 			{
 				/* Error */
@@ -448,15 +449,16 @@ int addRecipe(HashMap * mapRecipes, TreeMap * rByPopularity, char * userID)
 		printf("Popularidad de la receta %hu: ", i);
 		count = scanf("%hu", &newRecipe->popularity);
 
-		insertListIntoTree(rByPopularity, &newRecipe->popularity, newRecipe->name);
-
 		printf("Tipo de receta %hu: ", i);
 		count = scanf("%10s", newRecipe->type);
 		getchar();
 
 		newRecipe->ingredients = createList();
 
-		/* Se inserta la receta en la tabla hash */
+		/* Inserción de la nueva popularidad si no existe. De lo contrario, solo se agrega el nombre de la receta a una lista */
+		insertListIntoTree(rByPopularity, &newRecipe->popularity, newRecipe->name);
+
+		/* Se inserta la receta en el mapa recetas */
 		insertMap(mapRecipes, newRecipe->name, newRecipe);
 
 		/* Ya que es necesario que exista la receta para ingresar ingredientes, este apartado queda acá */
@@ -502,10 +504,8 @@ int addFavs(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes, 
 
     	for(i = 1; i <= qty; i++)
 		{
-			printf("\n");
-			
 			/* Pedimos el nombre del nuevo ingrediente favorito */
-			printf("Nombre del ingrediente %hu: ", i);
+			printf("\nNombre del ingrediente %hu: ", i);
 			count = scanf("%20s", name);
 			getchar();
 
@@ -529,10 +529,8 @@ int addFavs(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes, 
 
     	for(i = 1; i <= qty; i++)
 		{
-			printf("\n");
-			
 			/* Pedimos el nombre de la nueva receta favorita */
-			printf("Nombre de la receta %hu: ", i);
+			printf("\nNombre de la receta %hu: ", i);
 			count = scanf("%c", &temp);
   			fgets(name, sizeof(name), stdin);
   			name[strcspn(name, "\n")] = 0;
@@ -564,8 +562,8 @@ int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity)
 	/* Desplegamos submenú con las opciones de búsqueda */
 	fflush(stdin);
 	printf("\nA continuación, usted podrá elegir: \n");
-  	printf("(1) Mostrar todos los nombres\n");
-  	printf("(2) Mostrar por popularidad\n");
+  	printf("(1) Mostrar todos los nombres (tipo e ingredientes)\n");
+  	printf("(2) Mostrar por popularidad (de más a menos valorada)\n");
 
 	/* Solo una opción a la vez, 1 o 2 */
   	do
@@ -620,10 +618,16 @@ int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity)
         	}
           	break;
       	}
+		default:
+		{
+			exit(EXIT_FAILURE);
+			break;
+		}
  	}
 }
 
-/*int desingMinutas(HashMap * mapRecipes, HashMap * mapUsers, char * userID){
+/*int design(HashMap * mapRecipes, HashMap * mapUsers, char * userID)
+{
 
 
   // creacion de listas segun el horario de comida
@@ -664,7 +668,6 @@ int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity)
       // ingredientes receta de desayuno
       List* ingRecDes = rDesayuno->ingredients;
       for(List * ingComun = firstList(ingRecFav); ingComun!= NULL; ingComun = nextList(ingRecFav)){
-      print(maria rosa)
 
         
 
@@ -676,3 +679,111 @@ int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity)
     }
   }
 }*/
+
+/* Función para exportar todos los mapas */
+void exportDatabases(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes)
+{
+	/*************************************************************/
+	/*          Exportación de usuarios y favoritos              */
+	/*************************************************************/
+	
+	/* Abrimos los archivos de usuarios y favoritos en modo escritura. Si no existen, se acaba el programa. */
+	FILE * usersDB = fopen("./file/usuarios.csv", "w");
+	FILE * favsDB = fopen("./file/favoritos.csv", "w");
+	if(!usersDB || !favsDB)
+	{
+		printf("El archivo de usuarios y/o de favoritos no existe(n).\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Recorriendo el mapa de usuarios e imprimiendo sus datos */
+	for(HashPair * exportUser = firstMap(mapUsers); exportUser != NULL; exportUser = nextMap(mapUsers))
+	{
+    	user * userValue = (user *) exportUser->value;
+
+    	/* Se imprime nombre e imc del usuario */
+    	fprintf(usersDB, "%s,", (char *) exportUser->key);
+    	fprintf(usersDB, "%s\n", (char *) userValue->imc);
+
+		/* Se imprimen los ingredientes favoritos del usuario */
+    	for(item * listFavIngredients = (item *) firstList(userValue->favIngredients); listFavIngredients != NULL; listFavIngredients = (item *) nextList(userValue->favIngredients))
+		{
+			/* Se imprime nombre de ingrediente, el usuario al que pertenece y el tipo de favorito */
+			fprintf(favsDB, "%s,", (char *) listFavIngredients->name);
+			fprintf(favsDB, "%s,", (char *) exportUser->key);
+			fprintf(favsDB, "%s\n", "ingredient");
+		}
+
+		/* Se imprimen las recetas favoritas del usuario */
+    	for(item * listFavRecipes = (item *) firstList(userValue->favRecipes); listFavRecipes != NULL; listFavRecipes = (item *) nextList(userValue->favRecipes))
+		{
+			/* Se imprime nombre de receta, el usuario al que pertenece y el tipo de favorito */
+			fprintf(favsDB, "%s,", (char *) listFavRecipes->name);
+			fprintf(favsDB, "%s,", (char *) exportUser->key);
+			fprintf(favsDB, "%s\n", "recipe");
+		}
+  	}
+
+	/*************************************************************/
+	/*        Exportación de recetas y sus ingredientes          */
+	/*************************************************************/
+
+  	/* Abrimos los archivos de recetas y sus ingredientes en modo escritura. Si no existen, se acaba el programa. */
+  	FILE * recipesDB = fopen("./file/recetas.csv", "w");
+	FILE * recipeIngredientsDB = fopen("./file/ingredientes_recetas.csv", "w");
+  	if(!recipesDB || !recipeIngredientsDB)
+	{
+		printf("El archivo de recetas y/o ingredientes de recetas no existe(n).\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Recorriendo el mapa de ingredientes e imprimiendo sus datos */
+	for(HashPair * exportRecipe = firstMap(mapRecipes); exportRecipe != NULL; exportRecipe = nextMap(mapRecipes))
+	{
+		recipe * recipeValue = (recipe *) exportRecipe->value;
+
+    	/* Se imprime nombre, popularidad y tipo */
+    	fprintf(recipesDB, "%s,", (char *) exportRecipe->key);
+		fprintf(recipesDB, "%hu,", (unsigned short) recipeValue->popularity);
+    	fprintf(recipesDB, "%s\n", (char *) recipeValue->type);
+
+		/* Se imprimen los ingredientes de cada receta */
+    	for(item * listIngredients = (item *) firstList(recipeValue->ingredients); listIngredients != NULL; listIngredients = (item *) nextList(recipeValue->ingredients))
+		{
+			/* Se imprime cada nombre de ingrediente */
+			fprintf(recipeIngredientsDB, "%s,", (char *) listIngredients->name);
+			fprintf(recipeIngredientsDB, "%s\n", (char *) exportRecipe->key);
+		}
+  	}
+
+	/*************************************************************/
+	/*              Exportación de ingredientes                  */
+	/*************************************************************/
+
+  	/* Abrimos el archivo despensa en modo escritura. Si no existe, se acaba el programa. */
+  	FILE * ingredientsDB = fopen("./file/despensa.csv", "w");
+  	if(!ingredientsDB)
+	{
+		printf("Archivo despensa no existe.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Recorriendo el mapa de ingredientes e imprimiendo sus datos */
+	for(HashPair * exportIngredient = firstMap(mapIngredients); exportIngredient != NULL; exportIngredient = nextMap(mapIngredients))
+	{
+		ingredient * ingredientValue = (ingredient *) exportIngredient->value;
+
+    	/* Se imprime nombre e imc */
+    	fprintf(ingredientsDB, "%s,", (char *) exportIngredient->key);
+		fprintf(ingredientsDB, "%hu,", (unsigned short) ingredientValue->quantity);
+		fprintf(ingredientsDB, "%hu,", (unsigned short) ingredientValue->calories);
+    	fprintf(ingredientsDB, "%s\n", (char *) ingredientValue->owner);
+  	}
+  
+	/* Cerramos los archivoS */
+	fclose(usersDB);
+	fclose(favsDB);
+	fclose(recipesDB);
+	fclose(recipeIngredientsDB);
+	fclose(ingredientsDB);
+}

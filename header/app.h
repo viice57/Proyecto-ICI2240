@@ -22,4 +22,6 @@ int addFavs(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes, 
 
 int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity);
 
+void exportDatabases(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes);
+
 #endif

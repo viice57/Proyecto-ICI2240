@@ -664,6 +664,7 @@ int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity)
       // ingredientes receta de desayuno
       List* ingRecDes = rDesayuno->ingredients;
       for(List * ingComun = firstList(ingRecFav); ingComun!= NULL; ingComun = nextList(ingRecFav)){
+      print(maria rosa)
 
         
 

@@ -80,7 +80,7 @@ void showChoice(HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUse
 		}
 		case 3:
 		{
-  			msg = addRecipe(mapRecipes, userID);
+  			msg = addRecipe(mapRecipes, rByPopularity, userID);
 
       		if(msg)
 			{

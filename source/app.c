@@ -83,6 +83,30 @@ void insertIntoList(char * sType, HashMap * map, char * key, item * newItem)
   	}
 }
 
+/* Función válida únicamente para árbol de popularidades */
+void insertListIntoTree(TreeMap * rByPopularity, unsigned short * popularity, char * recipeName)
+{
+	/* Creación de un nuevo item (nombre de receta) para la lista que está en el árbol de popularidades */
+	item * addRecipeName = (item *) malloc(sizeof(item));
+	strncpy(addRecipeName->name, recipeName, sizeof(addRecipeName->name));
+
+	/* Buscar si la popularidad está en el árbol. Si no existe, se ingresa. */
+	TreePair * searchTree = searchTreeMap(rByPopularity, popularity);
+	if(!searchTree)
+	{
+		/* Creación de lista, agregar nombre e insertar al árbol la nueva popularidad (la lista es el value) */
+		List * recipeNames = createList();
+		pushBack(recipeNames, addRecipeName);
+		insertTreeMap(rByPopularity, popularity, recipeNames);
+	}
+	else
+	{	
+		/* Como ya existe, obtenemos la lista de nombres y agregamos un nombre más */
+    	List * listAux = (List *) searchTree->value;
+    	pushBack(listAux, addRecipeName);
+	}
+}
+
 /* Función que permite importar todos los archivos de la carpeta /file a tablas y listas correspondientes */
 void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes)
 {
@@ -175,25 +199,7 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
     	strncpy(importRecipe->type, strtok(NULL, "\n"), sizeof(importRecipe->type));
 		importRecipe->ingredients = createList();
 
-		/* Creación de un nuevo item (nombre de receta) para la lista que está en el árbol de popularidades */
-		item * addRecipeName = (item *) malloc(sizeof(item));
-		strncpy(addRecipeName->name, importRecipe->name, sizeof(addRecipeName->name));
-
-		/* Buscar si la popularidad está en el árbol. Si no existe, se ingresa. */
-		TreePair * searchTree = searchTreeMap(rByPopularity, &importRecipe->popularity);
-		if(!searchTree)
-		{
-			/* Creación de lista, agregar nombre e insertar al árbol la nueva popularidad */
-			List * recipeNames = createList();
-			pushBack(recipeNames, addRecipeName);
-			insertTreeMap(rByPopularity, &importRecipe->popularity, recipeNames);
-		}
-		else
-		{	
-			/* Como ya existe, obtenemos de la lista desde el valor del nodo y agregamos un nuevo nombre */
-    		List * listAux = (List *) searchTree->value;
-    		pushBack(listAux, addRecipeName);
-		}
+		insertListIntoTree(rByPopularity, &importRecipe->popularity, importRecipe->name);
 
     	/* Insertamos nodo en tabla hash */
     	insertMap(mapRecipes, importRecipe->name, importRecipe);
@@ -413,7 +419,7 @@ int addIngredient(HashMap * mapIngredients, char * userID)
 }
 
 /* Función para agregar una nueva receta aparte de las que ya existen */
-int addRecipe(HashMap * mapRecipes, char * userID)
+int addRecipe(HashMap * mapRecipes, TreeMap * rByPopularity, char * userID)
 {
 	char temp, ingredientName[20];
 	unsigned short i, j, recipesQty, ingredientsQty, count;
@@ -442,7 +448,7 @@ int addRecipe(HashMap * mapRecipes, char * userID)
 		printf("Popularidad de la receta %hu: ", i);
 		count = scanf("%hu", &newRecipe->popularity);
 
-		/* Agregar que: Si es una popularidad nueva, se agrega al treemap. Si no, se  ingresa el nombre a la lista correspondiente */
+		insertListIntoTree(rByPopularity, &newRecipe->popularity, newRecipe->name);
 
 		printf("Tipo de receta %hu: ", i);
 		count = scanf("%10s", newRecipe->type);

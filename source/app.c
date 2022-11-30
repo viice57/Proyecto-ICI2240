@@ -38,7 +38,7 @@ struct item
 /* Función que permite ingresar datos a una lista dentro de una tabla hash */
 void insertIntoList(char * sType, HashMap * map, char * key, item * newItem)
 {
-	/* Obtención del nodo desde tabla hash (puede ser recetas o usuarios) */
+	/* Obtención del nodo desde tabla hash (puede ser receta o usuario) */
   	HashPair * searchInMap = searchMap(map, key);
 
   	/* Si el nodo buscado existe */

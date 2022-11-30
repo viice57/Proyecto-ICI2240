@@ -25,7 +25,7 @@ void showMenu()
 	printf("\nIndique la accion deseada (solo números): ");
 }
 
-void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUsers, TreeMap * rByPopularity, short choice, char * userID)
+void showChoice(HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUsers, TreeMap * rByPopularity, short choice, char * userID)
 {
 	int msg;
 

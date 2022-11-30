@@ -18,19 +18,16 @@ int main(void) {
 	short choice = -1, count;
 	char userID[15];
 
-	List * rByAffinity = createList();
-	
 	HashMap * mapRecipes = createMap(50);
 	HashMap * mapIngredients = createMap(150);
 	HashMap * mapUsers = createMap(20);
-	
 	TreeMap * rByPopularity = createTreeMap(lower_than_string);
-  
+
+	importDatabases(rByPopularity, mapUsers, mapIngredients, mapRecipes);
+	
 	do {
     	showMenu();
 
-		if(choice == -1) importDatabases(rByPopularity, mapUsers, mapIngredients, mapRecipes);
-    
     	fflush(stdin);
 		count = scanf("%hi", &choice);
 
@@ -41,7 +38,7 @@ int main(void) {
       		}
 		}
 		
-		showChoice(rByAffinity, mapRecipes, mapIngredients, mapUsers, rByPopularity, choice, userID);
+		showChoice(mapRecipes, mapIngredients, mapUsers, rByPopularity, choice, userID);
 		
 		if(searchMap(mapUsers, userID)) printf("%sInició sesión como: %s%s", "\x1B[1m", userID, "\x1B[0m");
 	} while(choice != 0);

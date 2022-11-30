@@ -10,7 +10,7 @@ struct recipe
 {
 	char name[30], type[20];
 	unsigned short popularity;
-	List ingredients;
+	List * ingredients;
 };
 
 /* Estructura ingrediente */
@@ -24,7 +24,9 @@ struct ingredient
 struct user
 {
   	char name[15], imc[6];
-	List favIngredients, favRecipes, mealPlan;
+	List * favIngredients;
+	List * favRecipes;
+	List * mealPlan;
 };
 
 /* Estructura para favoritos */
@@ -34,7 +36,7 @@ struct item
 };
 
 /* Función que permite ingresar datos a una lista dentro de una tabla hash */
-int insertOnList(char * sType, HashMap * map, char * key, item * newItem)
+void insertIntoList(char * sType, HashMap * map, char * key, item * newItem)
 {
 	/* Obtención del nodo desde tabla hash (puede ser recetas o usuarios) */
   	HashPair * searchInMap = searchMap(map, key);
@@ -48,17 +50,17 @@ int insertOnList(char * sType, HashMap * map, char * key, item * newItem)
 		if(strcmp(sType, "ingredient") == 0)
 		{
 			/* Lista ingredientes favoritos (existe en mapa usuarios) */
-			listAux = &((user *) searchInMap->value)->favIngredients;
+			listAux = ((user *) searchInMap->value)->favIngredients;
 		}
 		else if(strcmp(sType, "recipe") == 0)
 		{
 			/* Lista recetas favoritas (existe en mapa usuarios) */
-			listAux = &((user *) searchInMap->value)->favRecipes;
+			listAux = ((user *) searchInMap->value)->favRecipes;
 		}
 		else if(strcmp(sType, "recipe_ingredient") == 0)
 		{
 			/* Lista ingredientes (existe en mapa recetas) */
-			listAux = &((recipe *) searchInMap->value)->ingredients;
+			listAux = ((recipe *) searchInMap->value)->ingredients;
 		}
 
 		/* Comprobamos de que existan elementos en la lista */
@@ -106,11 +108,11 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
     	user * importUser = (user *) malloc(sizeof(user));
 		
 		/* Separamos los siguientes datos: nombre e IMC */
-		char * readUsername = strtok(readLineUsers, ",");
-		strncpy(importUser->name, readUsername, sizeof(importUser->name));
-		
-		char * readIMC = strtok(NULL, "\n");
-		strncpy(importUser->imc, readIMC, sizeof(importUser->imc));
+		strncpy(importUser->name, strtok(readLineUsers, ","), sizeof(importUser->name));
+		strncpy(importUser->imc, strtok(NULL, "\n"), sizeof(importUser->imc));
+		importUser->favIngredients = createList();
+		importUser->favRecipes = createList();
+		importUser->mealPlan = createList();
 
 		/* Inserción a mapa usuarios */ 
     	insertMap(mapUsers, importUser->name, importUser);
@@ -138,15 +140,12 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
     	item * newFav = (item *) malloc(sizeof(item));
 		
 		/* Separamos los siguientes datos: nombre, usuario al que pertenece y tipo de favorito */
-		char * readFavName = strtok(readLineFavs, ",");
-		strncpy(newFav->name, readFavName, sizeof(newFav->name));
-		
+		strncpy(newFav->name, strtok(readLineFavs, ","), sizeof(newFav->name));
 		char * readFavOwner = strtok(NULL, ",");
-		
 		char * readFavType = strtok(NULL, "\n");
 
     	/* Inserción en lista de ingredientes o recetas favorit@s */
-		insertOnList(readFavType, mapUsers, readFavOwner, newFav);
+		insertIntoList(readFavType, mapUsers, readFavOwner, newFav);
 	}
 	
 	/*************************************************************/
@@ -171,14 +170,10 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
     	recipe * importRecipe = (recipe *) malloc(sizeof(recipe));
 		
     	/* Asignación de los valores a cada elemento de la estructura receta */
-    	char * readRecipeName = strtok(readLineRecipes, ",");
-    	strncpy(importRecipe->name, readRecipeName, sizeof(importRecipe->name));
-    
-    	char * readRecipePopularity = strtok(NULL, ",");
-    	importRecipe->popularity  = (unsigned short) atoi(readRecipePopularity);
-
-    	char * readRecipeType = strtok(NULL, "\n");
-    	strncpy(importRecipe->type, readRecipeType, sizeof(importRecipe->type));
+    	strncpy(importRecipe->name, strtok(readLineRecipes, ","), sizeof(importRecipe->name));
+    	importRecipe->popularity  = (unsigned short) atoi(strtok(NULL, ","));
+    	strncpy(importRecipe->type, strtok(NULL, "\n"), sizeof(importRecipe->type));
+		importRecipe->ingredients = createList();
 
 		/* Creación de un nuevo item (nombre de receta) para la lista que está en el árbol de popularidades */
 		item * addRecipeName = (item *) malloc(sizeof(item));
@@ -226,13 +221,11 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
     	item * newIngredient = (item *) malloc(sizeof(item));
 		
 		/* Separamos los siguientes datos: nombre y receta al que pertenece */
-		char * readIngredientName = strtok(readRecipeIngredients, ",");
-		strncpy(newIngredient->name, readIngredientName, sizeof(newIngredient->name));
-		
+		strncpy(newIngredient->name, strtok(readRecipeIngredients, ","), sizeof(newIngredient->name));
 		char * readRecipeName = strtok(NULL, "\n");
 		
     	/* Inserción en lista de ingredientes o recetas favorit@s */
-		insertOnList("recipe_ingredient", mapRecipes, readRecipeName, newIngredient);
+		insertIntoList("recipe_ingredient", mapRecipes, readRecipeName, newIngredient);
 	}
 
 	/*************************************************************/
@@ -257,17 +250,10 @@ void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapI
     	ingredient * importIngredient = (ingredient *) malloc(sizeof(ingredient));
 		
     	/* Asignación de los valores a cada elemento de la estructura ingrediente */
-    	char * readIngredientName = strtok(readLineIngredients, ",");
-    	strncpy(importIngredient->name, readIngredientName, sizeof(importIngredient->name));
-    
-    	char * readIngredientQty = strtok(NULL, ",");
-    	importIngredient->quantity  = (unsigned short) atoi(readIngredientQty);
-
-    	char * readIngredientCal = strtok(NULL, ",");
-    	importIngredient->calories = (unsigned short) atoi(readIngredientCal);
-
-    	char * readIngredientOwner = strtok(NULL, "\n");
-    	strncpy(importIngredient->owner, readIngredientOwner, sizeof(importIngredient->owner));
+    	strncpy(importIngredient->name, strtok(readLineIngredients, ","), sizeof(importIngredient->name));
+    	importIngredient->quantity  = (unsigned short) atoi(strtok(NULL, ","));
+    	importIngredient->calories = (unsigned short) atoi(strtok(NULL, ","));
+    	strncpy(importIngredient->owner, strtok(NULL, "\n"), sizeof(importIngredient->owner));
     
     	/* Insertamos nodo en tabla hash */
 		//importar solo los del usuario que inició sesión
@@ -317,7 +303,7 @@ int userLogin(HashMap * mapUsers, char * userID)
     		count = scanf("%15s", username);
     		getchar();
 
-			/* Obtención del usuario. Si no existe, error. */
+			/* Búsqueda del usuario ingresado. Si no existe, error. */
 			userSearch = searchMap(mapUsers, username);
 			if(!userSearch) return 1;
 
@@ -330,7 +316,7 @@ int userLogin(HashMap * mapUsers, char * userID)
 		}
 		case 2:
 		{
-			/* Pedimos el nombre del posible usuario */
+			/* Pedimos el nombre del nuevo usuario */
 			printf("\nHa seleccionado crear un nuevo usuario.\nPor favor, ingrese su nombre: ");
 			count = scanf("%15s", username);
 			getchar();
@@ -349,10 +335,15 @@ int userLogin(HashMap * mapUsers, char * userID)
 			/* Calculamos el imc a partir de los datos ingresados */
 			imc = weight / pow(height, 2);
 
-			/* Estructuramos los datos del usuario  */
+			/* Reservamos memoria para un nuevo usuario */
 			user * newUser = (user *) malloc(sizeof(user));
+
+			/* Estructuramos los datos del usuario  */
 			strncpy(newUser->name, username, sizeof(newUser->name));
 			gcvt(imc, 3, newUser->imc);
+			newUser->favIngredients = createList();
+			newUser->favRecipes = createList();
+			newUser->mealPlan = createList();
 
 			/* Puntero que guarda el nombre de usuario */
 			strncpy(userID, newUser->name, sizeof(userID));
@@ -445,17 +436,19 @@ int addRecipe(HashMap * mapRecipes, char * userID)
   		fgets(newRecipe->name, sizeof(newRecipe->name), stdin);
   		newRecipe->name[strcspn(newRecipe->name, "\n")] = 0;
 
-		/* Si existe alguna receta con el mismo nombre retorna error */
+		/* Si ya existe alguna receta con el mismo nombre, retorna error */
 		if(searchMap(mapRecipes, newRecipe->name)) return 1;
 
 		printf("Popularidad de la receta %hu: ", i);
 		count = scanf("%hu", &newRecipe->popularity);
 
-		/* Si es un número de popularidad nueva, se agrega al treemap. Si no, se ingresa solo el nombre a la lista correspondiente */
+		/* Agregar que: Si es una popularidad nueva, se agrega al treemap. Si no, se  ingresa el nombre a la lista correspondiente */
 
 		printf("Tipo de receta %hu: ", i);
 		count = scanf("%10s", newRecipe->type);
 		getchar();
+
+		newRecipe->ingredients = createList();
 
 		/* Se inserta la receta en la tabla hash */
 		insertMap(mapRecipes, newRecipe->name, newRecipe);
@@ -470,12 +463,12 @@ int addRecipe(HashMap * mapRecipes, char * userID)
 			/* Memoria para un nuevo ingrediente */
 			item * newIngredient = (item *) malloc(sizeof(item));
 			
-			printf("Ingrese nombre del ingrediente %hu", j);
+			printf("Ingrese nombre del ingrediente %hu: ", j);
 			count = scanf("%20s", newIngredient->name);
 			getchar();
 
 			/* Se inserta el ingrediente en la lista */
-			insertOnList("recipe_ingredient", mapRecipes, newRecipe->name, newIngredient);
+			insertIntoList("recipe_ingredient", mapRecipes, newRecipe->name, newIngredient);
 		}
 	}
 	/* Se ingresó correctamente */
@@ -510,7 +503,7 @@ int addFavs(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes, 
 			count = scanf("%20s", name);
 			getchar();
 
-			/* Obtención del ingrediente. Si no existe, error. */
+			/* Búsqueda del ingrediente. Si no existe, error. */
 			if(!searchMap(mapIngredients, name)) return 1;
 
 			/* Reservamos memoria para un nuevo ingrediente favorito */
@@ -518,14 +511,14 @@ int addFavs(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes, 
 			strncpy(newFavIngredient->name, name, sizeof(newFavIngredient->name));
 
 			/* Inserción en lista de ingredientes favoritos */
-		  	insertOnList("ingredient", mapUsers, userID, newFavIngredient);
+		  	insertIntoList("ingredient", mapUsers, userID, newFavIngredient);
 		}
 		return 0;
 	}
 	else if(strcmp(typeOfFav, "receta") == 0)
 	{
 		/* Cantidad máxima de r. favoritas */
-		printf("\n¿Cuántas recetas desea ingresar?");
+		printf("\n¿Cuántas recetas desea ingresar?: ");
 		count = scanf("%hu", &qty);
 
     	for(i = 1; i <= qty; i++)
@@ -538,7 +531,7 @@ int addFavs(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes, 
   			fgets(name, sizeof(name), stdin);
   			name[strcspn(name, "\n")] = 0;
 
-			/* Obtención de la receta. Si no existe, error. */
+			/* Búsqueda de la receta. Si no existe, error. */
 			if(!searchMap(mapRecipes, name)) return 1;
 
 			/* Reservamos memoria para una nueva receta favorita */
@@ -546,7 +539,7 @@ int addFavs(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes, 
 			strncpy(newFavRecipe->name, name, sizeof(newFavRecipe->name));
 
 			/* Inserción en lista de recetas favoritas */
-		  	insertOnList("recipe", mapUsers, userID, newFavRecipe);
+		  	insertIntoList("recipe", mapUsers, userID, newFavRecipe);
 		}
 		return 0;
 	}
@@ -557,24 +550,23 @@ int addFavs(HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes, 
   	}
 }
 
-/* Función para mostrar recetas con tres tipos de filtros */
+/* Función para mostrar recetas con dos tipos de filtros */
 int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity)
 {
   	unsigned short whatToDo = 0, count;
 
 	/* Desplegamos submenú con las opciones de búsqueda */
 	fflush(stdin);
-	printf("\nA continuación, usted podrá visualizar las recetas disponibles: \n");
+	printf("\nA continuación, usted podrá elegir: \n");
   	printf("(1) Mostrar todos los nombres\n");
   	printf("(2) Mostrar por popularidad\n");
-  	printf("(3) Mostrar por tipo\n");
 
-	/* Solo una opción a la vez, entre 1 y 3 */
+	/* Solo una opción a la vez, 1 o 2 */
   	do
 	{
 		printf("\nSeleccione una de las anteriores: ");
 		count = scanf("%hu", &whatToDo);
-	} while(whatToDo < 1 || whatToDo > 3);
+	} while(whatToDo < 1 || whatToDo > 2);
 	
 	printf("\nLista de recetas disponibles:\n");
   	switch(whatToDo)
@@ -585,13 +577,18 @@ int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity)
 			/* Recorrido por el mapa de recetas */
           	for(HashPair * receta = firstMap(mapRecipes); receta != NULL; receta = nextMap(mapRecipes))
 	        {
+				/* Para obtener nodo->value */
+				recipe * recipeValues = (recipe *) receta->value;
+				
 				/* Nombre de la receta */
               	printf("\n• %s\n", (char*) receta->key);
+				printf("• Tipo de receta: %s\n", (char*) recipeValues->type);
 
-				/* Obtenemos los ingredientes de la receta desde la lista */
+				/* Obtenemos la lista de ingredientes desde nodo->value */
 				printf("• Ingredientes: ");
-				for(item * listIngredients = (item *) firstList(&((recipe *) receta->value)->ingredients); listIngredients != NULL; listIngredients = (item *) nextList(&((recipe *) receta->value)->ingredients))
+				for(item * listIngredients = (item *) firstList(recipeValues->ingredients); listIngredients != NULL; listIngredients = (item *) nextList(recipeValues->ingredients))
 				{
+					/* Se imprime cada nombre de ingrediente */
 					printf("%s - ", listIngredients->name);
 				}
 				printf("\n");
@@ -607,7 +604,7 @@ int showRecipes(HashMap * mapRecipes, TreeMap * rByPopularity)
 				/* Número de popularidad */
           		printf("%hu: ", *newSearch->key);
 
-				/* Recetas que tienen esa popularidad */
+				/* Lista de recetas que tienen la misma popularidad */
 				for(item * listNames = (item *) firstList(newSearch->value); listNames != NULL; listNames = (item *) nextList(newSearch->value))
 				{
 					/* Nombre de la receta */

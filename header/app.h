@@ -6,7 +6,7 @@ typedef struct ingredient ingredient;
 typedef struct user user;
 typedef struct item item;
 
-int insertOnList(char * sType, HashMap * map, char * key, item * newItem);
+void insertIntoList(char * sType, HashMap * map, char * key, item * newItem);
 
 void importDatabases(TreeMap * rByPopularity, HashMap * mapUsers, HashMap * mapIngredients, HashMap * mapRecipes);
 

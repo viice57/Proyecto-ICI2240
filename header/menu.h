@@ -3,6 +3,6 @@
 
 void showMenu();
 
-void showChoice(List * rByAffinity, HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUsers, TreeMap * rByPopularity, short choice, char * userID);
+void showChoice(HashMap * mapRecipes, HashMap * mapIngredients, HashMap * mapUsers, TreeMap * rByPopularity, short choice, char * userID);
 
 #endif
